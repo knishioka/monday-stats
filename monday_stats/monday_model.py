@@ -2,6 +2,8 @@ import os
 import json
 import requests
 
+from .board import Board
+
 
 class MondayModel:
     """Model to fetch monday data."""
@@ -39,18 +41,18 @@ class MondayModel:
         """Get boards list.
 
         Returns:
-            `list` of `dict`: board ids and names list.
+            `list` of `Board`: Board class list.
 
         Examples:
             >>> mm = MondayModel()
             >>> mm.boards()
-            [{'id': '1111111', 'name': 'test board 1'},
-
-             {'id': '2222222', 'name': 'test board 2'}]
+            [<monday_stats.board.Board at 0x111389090>,
+             <monday_stats.board.Board at 0x111ff3990>,
 
         """
         gql = '{boards {id name}}'
-        return self.query(gql)['boards']
+        boards = [Board(b) for b in self.query(gql)['boards']]
+        return boards
 
     def board_items(self, board_id):
         """Get specific board with items.
