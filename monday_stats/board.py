@@ -10,11 +10,14 @@ class Board:
 
         Args:
             board_dict: board dict including id and name
+
         """
         self.id = board_dict['id']
         self.name = board_dict['name']
         if 'items' in board_dict:
             self.groups = self.parse_groups(board_dict['items'])
+        else:
+            self.groups = {}
 
     def parse_groups(self, items):
         """Parse group data from dict.
@@ -34,3 +37,12 @@ class Board:
                                             group_title=group_title)
             groups[group_title].add_item(Item(item['name'], item['column_values']))
         return groups
+
+    def groups_dataframes(self):
+        """Return dict of group dataframes.
+
+        Returns:
+            `dict` of `pandas.DataFrame`: key is group_id and value is items pandas.DataFrame.
+
+        """
+        return {group_id: g.to_dataframe() for group_id, g in self.groups.items()}
