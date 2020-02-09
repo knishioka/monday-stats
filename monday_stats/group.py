@@ -1,3 +1,5 @@
+import pandas as pd
+
 from .item import Item
 
 
@@ -25,3 +27,11 @@ class Group:
         """
         assert Item == type(item), 'item should be Item object.'
         self.items.append(item)
+
+    def to_dataframe(self):
+        """Convert item list to pandas.DataFrame.
+
+        Returns:
+            pandas.DataFrame: each row stands for an item.
+        """
+        return pd.concat(map(lambda x: x.values, self.items), axis=1)
