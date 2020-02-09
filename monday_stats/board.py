@@ -32,5 +32,5 @@ class Board:
             if group_title not in groups:
                 groups[group_title] = Group(group_id=item['group']['id'],
                                             group_title=group_title)
-            groups[group_title].add_item(Item(item['name']))
+            groups[group_title].add_item(Item(item['name'], item['column_values']))
         return groups
