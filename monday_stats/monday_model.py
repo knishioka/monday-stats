@@ -51,3 +51,32 @@ class MondayModel:
         """
         gql = '{boards {id name}}'
         return self.query(gql)['boards']
+
+    def board_items(self, board_id):
+        """Get specific board with items.
+
+        Args:
+            board_id: monday board id.
+
+        Returns:
+            `list` of `dict`: board data.
+
+        """
+        gql = """
+        {
+          boards(ids: %s) {
+            name
+            items {
+              name
+              group {
+                title
+              }
+              column_values {
+                title
+                text
+              }
+            }
+          }
+        }
+        """ % (board_id)
+        return self.query(gql)['boards']
