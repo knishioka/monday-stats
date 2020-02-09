@@ -6,7 +6,7 @@ from .board import Board
 
 
 class MondayModel:
-    """Model to fetch monday data."""
+    """Create model to fetch monday data."""
 
     def __init__(self):
         """Initializer."""
@@ -61,16 +61,18 @@ class MondayModel:
             board_id: monday board id.
 
         Returns:
-            `list` of `dict`: board data.
+            `list` of `Board`: Board class list.
 
         """
         gql = """
         {
           boards(ids: %s) {
+            id
             name
             items {
               name
               group {
+                id
                 title
               }
               column_values {
@@ -80,5 +82,6 @@ class MondayModel:
             }
           }
         }
-        """ % (board_id)
-        return self.query(gql)['boards']
+        """ % (board_id)   # FIXME: this query is redundant to avoid complexity.
+        board = self.query(gql)['boards'][0]
+        return Board(board)
