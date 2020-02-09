@@ -54,7 +54,7 @@ class MondayModel:
         boards = [Board(b) for b in self.query(gql)['boards']]
         return boards
 
-    def board_items(self, board_id):
+    def board_with_items(self, board_id):
         """Get specific board with items.
 
         Args:
