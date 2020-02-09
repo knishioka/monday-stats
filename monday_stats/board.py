@@ -1,4 +1,5 @@
 from .group import Group
+from .item import Item
 
 
 class Board:
@@ -31,4 +32,5 @@ class Board:
             if group_title not in groups:
                 groups[group_title] = Group(group_id=item['group']['id'],
                                             group_title=group_title)
+            groups[group_title].add_item(Item(item['name']))
         return groups

@@ -1,3 +1,6 @@
+from .item import Item
+
+
 class Group:
     """Monday group class."""
 
@@ -12,3 +15,13 @@ class Group:
         self.id = group_id
         self.title = group_title
         self.items = []
+
+    def add_item(self, item):
+        """Add item class to the group.
+
+        Args:
+            items (Item): Item class.
+
+        """
+        assert Item == type(item), 'item should be Item object.'
+        self.items.append(item)
