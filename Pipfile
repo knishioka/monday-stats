@@ -10,10 +10,10 @@ requests = "*"
 pandas = "*"
 argparse = "*"
 pytest = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.7"
 
 [scripts]
-ipython = 'ipython'
 group_item_count = 'python -m monday_stats.group_item_count'
