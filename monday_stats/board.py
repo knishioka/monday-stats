@@ -5,17 +5,18 @@ from .item import Item
 class Board:
     """Monday board class."""
 
-    def __init__(self, board_dict):
+    def __init__(self, board_id, board_name, items=[]):
         """Initialize board.
 
         Args:
-            board_dict: board dict including id and name
+            board_id (str): board id.
+            board_name (str): board name
 
         """
-        self.id = board_dict['id']
-        self.name = board_dict['name']
-        if 'items' in board_dict:
-            self.groups = self.parse_groups(board_dict['items'])
+        self.id = board_id
+        self.name = board_name
+        if items:
+            self.groups = self.parse_groups(items)
         else:
             self.groups = {}
 

@@ -51,7 +51,7 @@ class MondayModel:
 
         """
         gql = '{boards {id name}}'
-        boards = [Board(b) for b in self.query(gql)['boards']]
+        boards = [Board(board_id=b['id'], board_name=b['name']) for b in self.query(gql)['boards']]
         return boards
 
     def board_with_items(self, board_id):
@@ -84,4 +84,4 @@ class MondayModel:
         }
         """ % (board_id)   # FIXME: this query is redundant to avoid complexity.
         board = self.query(gql)['boards'][0]
-        return Board(board)
+        return Board(board_id=board['id'], board_name=board['name'], items=board['items'])
