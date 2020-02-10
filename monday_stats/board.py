@@ -1,3 +1,5 @@
+import pandas as pd
+
 from .group import Group
 from .item import Item
 
@@ -47,3 +49,21 @@ class Board:
 
         """
         return {group_id: g.to_dataframe() for group_id, g in self.groups.items()}
+
+    def to_dataframe(self, index='item'):
+        """Return dataframe including all groups.
+
+        Args:
+            index (str): 'item' or 'column'
+
+        Returns:
+            pandas.DataFrame: dataframe includes all group items.
+
+        """
+        df = pd.concat(self.groups_dataframes().values(), axis=1)
+        if index == 'column':
+            return df.T
+        elif index == 'item':
+            return df
+        else:
+            raise ValueError("index must be 'columns' or 'item'")
