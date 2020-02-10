@@ -62,8 +62,8 @@ class Board:
         """
         df = pd.concat(self.groups_dataframes().values(), axis=1)
         if index == 'column':
-            return df.T
-        elif index == 'item':
             return df
+        elif index == 'item':
+            return df.T
         else:
             raise ValueError("index must be 'columns' or 'item'")
