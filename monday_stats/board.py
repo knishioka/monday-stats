@@ -60,10 +60,10 @@ class Board:
             pandas.DataFrame: dataframe includes all group items.
 
         """
-        df = pd.concat(self.groups_dataframes().values(), axis=1)
+        df = pd.concat(self.groups_dataframes().values())
         if index == 'column':
-            return df
-        elif index == 'item':
             return df.T
+        elif index == 'item':
+            return df
         else:
-            raise ValueError("index must be 'columns' or 'item'")
+            raise ValueError("index must be 'column' or 'item'")

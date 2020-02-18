@@ -35,4 +35,4 @@ class Group:
             pandas.DataFrame: each row stands for an item.
 
         """
-        return pd.concat(map(lambda x: x.values, self.items), axis=1)
+        return pd.concat(map(lambda x: x.values, self.items), axis=1).T
