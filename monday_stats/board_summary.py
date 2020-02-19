@@ -1,4 +1,6 @@
 import pandas as pd
+import argparse
+
 from monday_stats.monday_model import MondayModel
 
 
@@ -24,4 +26,25 @@ def main(board_id, group_key, groups=[], value_texts=[], columns=[]):
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Summarize board data.')
+    parser.add_argument('-b', '--board-id',
+                        required=True,
+                        help='monday board ids')
+    parser.add_argument('-k', '--group-key',
+                        required=True,
+                        help='Key for grouping')
+    parser.add_argument('-g', '--groups',
+                        required=True,
+                        help='groups list separated by comma')
+    parser.add_argument('-v', '--values',
+                        required=True,
+                        help='value list separated by comma')
+    parser.add_argument('-c', '--columns',
+                        required=True,
+                        help='columns list separated by comma')
+    args = parser.parse_args()
+    groups = args.groups.split(',')
+    value_texts = args.values.split(',')
+    columns = args.columns.split(',')
+    main(board_id=args.board_id, group_key=args.group_key,
+         groups=groups, value_texts=value_texts, columns=columns)
