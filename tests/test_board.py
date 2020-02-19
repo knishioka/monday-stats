@@ -1,4 +1,26 @@
+import pytest
+
 from monday_stats.board import Board
+
+
+@pytest.fixture
+def board_item_dict():
+    group_id = 'group_id_1'
+    group_title = 'group_title_1'
+    board_items = [
+        {
+            'name': 'item name1',
+            'group': {
+                'id': 'group_id_1',
+                'title': 'group_title_1'
+            },
+            'column_values': [
+                {'title': 'col_1', 'text': 'val 1-1'},
+                {'title': 'col_2', 'text': 'val 2-1'}
+            ]
+        }
+    ]
+    return board_items
 
 
 def test_board():
@@ -9,19 +31,6 @@ def test_board():
     assert board.name == board_name
 
 
-def test_board_with_items():
-    group_id = 'group id'
-    group_title = 'group title'
-    items = [{
-        'name': 'item name1',
-        'group': {
-            'id': group_id,
-            'title': group_title
-        },
-        'column_values': [
-            {'title': 'col 1', 'text': 'val 1-1'},
-            {'title': 'col 2', 'text': 'val 2-1'}
-        ]
-    }]
-    board = Board(board_id=1, board_name='board name', items=items)
-    assert group_title in board.groups.keys()
+def test_board_with_items(board_item_dict):
+    board = Board(board_id=1, board_name='board name', items=board_item_dict)
+    assert 'group_title_1' in board.groups.keys()
