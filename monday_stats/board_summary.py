@@ -1,5 +1,6 @@
-import pandas as pd
 import argparse
+import datetime
+import pandas as pd
 
 from monday_stats.monday_model import MondayModel
 
@@ -22,14 +23,15 @@ def main(board_id, group_key, groups=[], value_texts=[], columns=[]):
                 .groupby(group_key)\
                 .apply(lambda x: x[columns].apply(pd.value_counts))
     output_index = pd.MultiIndex.from_product([df[group_key].unique(), value_texts])
-    summary.loc[output_index, :].fillna(0).astype(int).to_csv('output.csv')
+    file = f'{datetime.datetime.today().strftime("%Y%m%d")}_{board.name}.csv'
+    summary.reindex(output_index).fillna(0).astype(int).to_csv(file)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Summarize board data.')
     parser.add_argument('-b', '--board-id',
                         required=True,
-                        help='monday board ids')
+                        help='monday board id')
     parser.add_argument('-k', '--group-key',
                         required=True,
                         help='Key for grouping')
