@@ -18,7 +18,8 @@ def main(board_id, group_key, groups=[], value_texts=[], columns=[]):
     mm = MondayModel()
     board = mm.board_with_items(board_id)
     dfs = board.groups_dataframes()
-    df = pd.concat([dfs[g] for g in groups])
+    existing_groups = set(groups).intersection(dfs.keys())
+    df = pd.concat([dfs[g] for g in existing_groups])
     summary = df.replace('', None)\
                 .groupby(group_key)\
                 .apply(lambda x: x[columns].apply(pd.value_counts))
