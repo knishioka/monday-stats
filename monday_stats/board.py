@@ -60,7 +60,7 @@ class Board:
             pandas.DataFrame: dataframe includes all group items.
 
         """
-        df = pd.concat(self.groups_dataframes().values())
+        df = pd.concat([gdf.assign(group=group_id) for group_id, gdf in self.groups_dataframes().items()])
         if index == 'column':
             return df.T
         elif index == 'item':
