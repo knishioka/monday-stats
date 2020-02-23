@@ -20,12 +20,26 @@ def main(board_id, group_key, groups=[], value_texts=[], columns=[]):
     dfs = board.groups_dataframes()
     existing_groups = set(groups).intersection(dfs.keys())
     df = pd.concat([dfs[g] for g in existing_groups])
-    summary = df.replace('', None)\
-                .groupby(group_key)\
-                .apply(lambda x: x[columns].apply(pd.value_counts))
+    summary = pd.concat([summarize_group(gdf, group_id) for group_id, gdf in df.groupby('Position')])
     output_index = pd.MultiIndex.from_product([df[group_key].unique(), value_texts])
     file = f'{datetime.datetime.today().strftime("%Y%m%d")}_{board.name}.csv'
     summary.reindex(output_index).fillna(0).astype(int).to_csv(file)
+
+
+def summarize_group(gdf, group_id):
+    """Summarize group df.
+
+    Args:
+        gdf (pd.DataFrame): items in the group.
+        group_id (str): monday group id.
+
+    Returns:
+        pd.DataFrame: group summary.
+
+    """
+    summary = gdf[columns].apply(pd.value_counts).reindex(value_texts)
+    summary.index = summary.index.map(lambda x: (group_id, x))
+    return summary
 
 
 if __name__ == '__main__':
