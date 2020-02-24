@@ -11,6 +11,7 @@ pandas = "*"
 argparse = "*"
 pytest = "*"
 ipython = "*"
+pydrive = "*"
 
 [requires]
 python_version = "3.7"
