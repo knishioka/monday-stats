@@ -14,16 +14,35 @@ def main(board_id, group_key, groups=[], value_texts=[], columns=[]):
         groups (`list` of `str`): monday group title list.
         value_texts (`list` of `str`): target values.
         columns (`list` of `str`): target columns
+
     """
     mm = MondayModel()
     board = mm.board_with_items(board_id)
+    df = board_summary(board, group_key, groups, value_texts, columns)
+    file = f'{datetime.datetime.today().strftime("%Y%m%d")}_{board.name}.csv'
+    df.to_csv(file)
+
+
+def board_summary(board, group_key, groups=[], value_texts=[], columns=[]):
+    """Summarize board.
+
+    Args:
+        board (monday.board.Board): monday Board class.
+        group_key (str): group key which need to be one of board columns.
+        groups (`list` of `str`): monday group title list.
+        value_texts (`list` of `str`): target values.
+        columns (`list` of `str`): target columns
+
+    Returns:
+        pandas.DataFrame: summarized dashboard.
+
+    """
     dfs = board.groups_dataframes()
     existing_groups = set(groups).intersection(dfs.keys())
     df = pd.concat([dfs[g] for g in existing_groups])
     summary = pd.concat([summarize_group(gdf, group_id) for group_id, gdf in df.groupby('Position')])
     output_index = pd.MultiIndex.from_product([df[group_key].unique(), value_texts])
-    file = f'{datetime.datetime.today().strftime("%Y%m%d")}_{board.name}.csv'
-    summary.reindex(output_index).fillna(0).astype(int).to_csv(file)
+    return summary.reindex(output_index).fillna(0).astype(int)
 
 
 def summarize_group(gdf, group_id):
