@@ -13,6 +13,7 @@ class Board:
         Args:
             board_id (str): board id.
             board_name (str): board name
+            items (list): item list including group.
 
         """
         self.id = board_id
@@ -58,6 +59,9 @@ class Board:
 
         Returns:
             pandas.DataFrame: dataframe includes all group items.
+
+        Raises:
+            ValueError: If the index is not valid.
 
         """
         df = pd.concat([gdf.assign(group=group_id) for group_id, gdf in self.groups_dataframes().items()])
