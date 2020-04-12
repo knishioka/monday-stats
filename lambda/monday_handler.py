@@ -14,7 +14,7 @@ def summary_handler(event, context):
     board_ids = os.environ['MONDAY_BOARD_IDS'].split(',')
     groups = os.environ['MONDAY_BOARD_GROUPS'].split(',')
     group_key = os.environ['MONDAY_BOARD_GROUP_KEY']
-    s3_dir = os.environ ['S3_DIR']
+    s3_dir = os.environ['S3_DIR']
 
     mm = MondayModel()
     for board_id in board_ids:
@@ -68,12 +68,20 @@ def summarize_group(gdf, group_id, columns, value_texts):
 
 
 def write_s3(text, s3path):
+    """Write text to s3.
+
+    Args:
+        text (str): text.
+        s3path(str): s3 file path.
+
+    """
     obj = get_s3_object(s3path)
     return obj.put(
         Body=text,
         ContentEncoding='utf-8',
         ContentType='text/plane'
     )
+
 
 def get_s3_object(s3path):
     """Get s3 object.
@@ -108,5 +116,6 @@ def get_bucket_key(s3path):
     bucket_name, key_name = re.match(r'(s3://)(.+?)/(.*)', s3path).group(2, 3)
     return bucket_name, key_name
 
+
 if __name__ == '__main__':
-    handler()
+    summary_handler({}, {})
