@@ -30,8 +30,6 @@ def board_summary(board, group_key, groups=[], value_texts=[], columns=[]):
         board (monday.board.Board): monday Board class.
         group_key (str): group key which need to be one of board columns.
         groups (`list` of `str`): monday group title list.
-        value_texts (`list` of `str`): target values.
-        columns (`list` of `str`): target columns
 
     Returns:
         pandas.DataFrame: summarized dashboard.
@@ -40,17 +38,20 @@ def board_summary(board, group_key, groups=[], value_texts=[], columns=[]):
     dfs = board.groups_dataframes()
     existing_groups = set(groups).intersection(dfs.keys())
     df = pd.concat([dfs[g] for g in existing_groups])
-    summary = pd.concat([summarize_group(gdf, group_id) for group_id, gdf in df.groupby('Position')])
+    summary = pd.concat([summarize_group(gdf, group_id, value_texts=value_texts, columns=columns)
+                         for group_id, gdf in df.groupby('Position')])
     output_index = pd.MultiIndex.from_product([df[group_key].unique(), value_texts])
     return summary.reindex(output_index).fillna(0).astype(int)
 
 
-def summarize_group(gdf, group_id):
+def summarize_group(gdf, group_id, value_texts=[], columns=[]):
     """Summarize group df.
 
     Args:
         gdf (pd.DataFrame): items in the group.
         group_id (str): monday group id.
+        value_texts (`list` of `str`): target values.
+        columns (`list` of `str`): target columns
 
     Returns:
         pd.DataFrame: group summary.
