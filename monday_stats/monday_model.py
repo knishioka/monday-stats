@@ -1,6 +1,9 @@
-import os
+import base64
 import json
+import os
+
 import requests
+import boto3
 
 from .board import Board
 
@@ -11,9 +14,16 @@ class MondayModel:
     def __init__(self):
         """Initializer."""
         self.endpoint = 'https://api.monday.com/v2/'
+        if os.getenv('ENCRYPTED_MONDAY_TOKEN'):
+            kms = boto3.client('kms')
+            monday_token = kms.decrypt(
+                CiphertextBlob=base64.b64decode(os.getenv('ENCRYPTED_MONDAY_TOKEN'))
+            )['Plaintext']
+        else:
+            monday_token = os.getenv('MONDAY_TOKEN')
         self.headers = {
             'Content-Type': 'application/json',
-            'Authorization': os.environ['MONDAY_TOKEN']
+            'Authorization': monday_token
         }
 
     def query(self, gql):
