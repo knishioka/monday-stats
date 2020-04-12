@@ -135,4 +135,5 @@ dmypy.json
 *.csv
 *.ipynb
 
-packages/**
+**/packages
+*.zip

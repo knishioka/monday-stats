@@ -1,2 +1,2 @@
-boto3==1.12.39
 pandas==1.0.3
+requests==2.23.0
