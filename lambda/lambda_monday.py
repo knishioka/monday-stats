@@ -11,16 +11,18 @@ from monday_stats.monday_model import MondayModel
 
 def summary_handler(event, context):
     """Monday handler."""
-    board_ids = os.environ['MONDAY_BOARD_IDS'].split(',')
-    groups = os.environ['MONDAY_BOARD_GROUPS'].split(',')
-    group_key = os.environ['MONDAY_BOARD_GROUP_KEY']
-    s3_dir = os.environ['S3_DIR']
+    board_ids = os.environ["MONDAY_BOARD_IDS"].split(",")
+    groups = os.environ["MONDAY_BOARD_GROUPS"].split(",")
+    group_key = os.environ["MONDAY_BOARD_GROUP_KEY"]
+    s3_dir = os.environ["S3_DIR"]
 
     mm = MondayModel()
     for board_id in board_ids:
         board = mm.board_with_items(board_id)
         df = board_summary(board, group_key, groups)
-        s3path = f'{s3_dir}/{datetime.datetime.today().strftime("%Y%m%d")}_{board.name}.csv'
+        s3path = (
+            f'{s3_dir}/{datetime.datetime.today().strftime("%Y%m%d")}_{board.name}.csv'
+        )
         s = io.StringIO()
         df.to_csv(s)
         write_s3(s.getvalue(), s3path)
@@ -39,12 +41,18 @@ def board_summary(board, group_key, groups=[]):
 
     """
     dfs = board.groups_dataframes()
-    value_texts = os.environ['MONDAY_BOARD_VALUES'].split(',')
-    columns = os.environ['MONDAY_BOARD_COLUMNS'].split(',')
+    value_texts = os.environ["MONDAY_BOARD_VALUES"].split(",")
+    columns = os.environ["MONDAY_BOARD_COLUMNS"].split(",")
     existing_groups = set(groups).intersection(dfs.keys())
+    if not dfs:
+        return pd.DataFrame()
     df = pd.concat([dfs[g] for g in existing_groups])
-    summary = pd.concat([summarize_group(gdf, group_id, value_texts=value_texts, columns=columns)
-                         for group_id, gdf in df.groupby('Position')])
+    summary = pd.concat(
+        [
+            summarize_group(gdf, group_id, value_texts=value_texts, columns=columns)
+            for group_id, gdf in df.groupby("Position")
+        ]
+    )
     output_index = pd.MultiIndex.from_product([df[group_key].unique(), value_texts])
     return summary.reindex(output_index).fillna(0).astype(int)
 
@@ -76,11 +84,7 @@ def write_s3(text, s3path):
 
     """
     obj = get_s3_object(s3path)
-    return obj.put(
-        Body=text,
-        ContentEncoding='utf-8',
-        ContentType='text/plane'
-    )
+    return obj.put(Body=text, ContentEncoding="utf-8", ContentType="text/plane")
 
 
 def get_s3_object(s3path):
@@ -94,7 +98,7 @@ def get_s3_object(s3path):
         S3.Object: s3 access object.
 
     """
-    s3 = boto3.resource('s3')
+    s3 = boto3.resource("s3")
     bucket_name, key_name = get_bucket_key(s3path)
     return s3.Object(bucket_name, key_name)
 
@@ -113,9 +117,9 @@ def get_bucket_key(s3path):
             ('3idea-dev', 'foo/bar/baz')
 
     """
-    bucket_name, key_name = re.match(r'(s3://)(.+?)/(.*)', s3path).group(2, 3)
+    bucket_name, key_name = re.match(r"(s3://)(.+?)/(.*)", s3path).group(2, 3)
     return bucket_name, key_name
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     summary_handler({}, {})
