@@ -49,4 +49,4 @@ jobs:
         pip install awscli
         aws lambda update-function-code \
             --function-name  "${FUNCTION_NAME}" \
-            --zip-file fileb://function.zip >> /dev/null
+            --zip-file fileb://lambda/function.zip > /dev/null
