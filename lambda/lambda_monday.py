@@ -42,7 +42,7 @@ def board_summary(board, group_key, groups=[]):
     value_texts = os.environ["MONDAY_BOARD_VALUES"].split(",")
     columns = os.environ["MONDAY_BOARD_COLUMNS"].split(",")
     existing_groups = set(groups).intersection(dfs.keys())
-    if not dfs:
+    if not existing_groups:
         return pd.DataFrame()
     df = pd.concat([dfs[g] for g in existing_groups])
     summary = pd.concat(
