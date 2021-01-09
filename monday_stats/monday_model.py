@@ -16,9 +16,9 @@ class MondayModel:
         self.endpoint = "https://api.monday.com/v2/"
         if os.getenv("ENCRYPTED_MONDAY_TOKEN"):
             kms = boto3.client("kms")
-            monday_token = kms.decrypt(
-                CiphertextBlob=base64.b64decode(os.getenv("ENCRYPTED_MONDAY_TOKEN"))
-            )["Plaintext"]
+            monday_token = kms.decrypt(CiphertextBlob=base64.b64decode(os.getenv("ENCRYPTED_MONDAY_TOKEN")))[
+                "Plaintext"
+            ]
         else:
             monday_token = os.getenv("MONDAY_TOKEN")
         self.headers = {
@@ -42,9 +42,7 @@ class MondayModel:
              {'id': '2222222', 'name': 'test board 2'}]
 
         """
-        r = requests.post(
-            self.endpoint, data=json.dumps({"query": gql}), headers=self.headers
-        )
+        r = requests.post(self.endpoint, data=json.dumps({"query": gql}), headers=self.headers)
         return r.json()["data"]
 
     def boards(self):
@@ -61,10 +59,7 @@ class MondayModel:
 
         """
         gql = "{boards {id name}}"
-        boards = [
-            Board(board_id=b["id"], board_name=b["name"])
-            for b in self.query(gql)["boards"]
-        ]
+        boards = [Board(board_id=b["id"], board_name=b["name"]) for b in self.query(gql)["boards"]]
         return boards
 
     def board_with_items(self, board_id):
@@ -99,6 +94,4 @@ class MondayModel:
             board_id
         )  # FIXME: this query is redundant to avoid complexity.
         board = self.query(gql)["boards"][0]
-        return Board(
-            board_id=board["id"], board_name=board["name"], items=board["items"]
-        )
+        return Board(board_id=board["id"], board_name=board["name"], items=board["items"])

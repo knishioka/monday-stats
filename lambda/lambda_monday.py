@@ -20,9 +20,7 @@ def summary_handler(event, context):
     for board_id in board_ids:
         board = mm.board_with_items(board_id)
         df = board_summary(board, group_key, groups)
-        s3path = (
-            f'{s3_dir}/{datetime.datetime.today().strftime("%Y%m%d")}_{board.name}.csv'
-        )
+        s3path = f'{s3_dir}/{datetime.datetime.today().strftime("%Y%m%d")}_{board.name}.csv'
         s = io.StringIO()
         df.to_csv(s)
         write_s3(s.getvalue(), s3path)

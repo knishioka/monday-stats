@@ -71,15 +71,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Summarize board data.")
     parser.add_argument("-b", "--board-id", required=True, help="monday board id")
     parser.add_argument("-k", "--group-key", required=True, help="Key for grouping")
-    parser.add_argument(
-        "-g", "--groups", required=True, help="groups list separated by comma"
-    )
-    parser.add_argument(
-        "-v", "--values", required=True, help="value list separated by comma"
-    )
-    parser.add_argument(
-        "-c", "--columns", required=True, help="columns list separated by comma"
-    )
+    parser.add_argument("-g", "--groups", required=True, help="groups list separated by comma")
+    parser.add_argument("-v", "--values", required=True, help="value list separated by comma")
+    parser.add_argument("-c", "--columns", required=True, help="columns list separated by comma")
     args = parser.parse_args()
     groups = args.groups.split(",")
     value_texts = args.values.split(",")

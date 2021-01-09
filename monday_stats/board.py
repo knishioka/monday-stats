@@ -37,9 +37,7 @@ class Board:
         for item in items:
             group_title = item["group"]["title"]
             if group_title not in groups:
-                groups[group_title] = Group(
-                    group_id=item["group"]["id"], group_title=group_title
-                )
+                groups[group_title] = Group(group_id=item["group"]["id"], group_title=group_title)
             groups[group_title].add_item(Item(item["name"], item["column_values"]))
         return groups
 
@@ -65,12 +63,7 @@ class Board:
             ValueError: If the index is not valid.
 
         """
-        df = pd.concat(
-            [
-                gdf.assign(group=group_id)
-                for group_id, gdf in self.groups_dataframes().items()
-            ]
-        )
+        df = pd.concat([gdf.assign(group=group_id) for group_id, gdf in self.groups_dataframes().items()])
         if index == "column":
             return df.T
         elif index == "item":
