@@ -11,6 +11,12 @@ on:
 jobs:
   update-lambda-function:
     runs-on: ubuntu-latest
+    env:
+      LAMBDA_DIR: worklog_notifier_lambda
+      FUNCTION_NAME: ${{ secrets.FUNCTION_NAME }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ap-northeast-1
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python 3.8
@@ -38,3 +44,9 @@ jobs:
         zip -g function.zip lambda_monday.py
         cd .. || exit
         zip -gr lambda/function.zip monday_stats
+    - name: Update lambda function
+      run: |
+        pip install awscli
+        aws lambda update-function-code \
+            --function-name  "${FUNCTION_NAME}" \
+            --zip-file fileb://function.zip >> /dev/null
