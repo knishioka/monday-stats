@@ -2,8 +2,8 @@ import base64
 import json
 import os
 
-import requests
 import boto3
+import requests
 
 from .board import Board
 
@@ -13,17 +13,17 @@ class MondayModel:
 
     def __init__(self):
         """Initializer."""
-        self.endpoint = 'https://api.monday.com/v2/'
-        if os.getenv('ENCRYPTED_MONDAY_TOKEN'):
-            kms = boto3.client('kms')
+        self.endpoint = "https://api.monday.com/v2/"
+        if os.getenv("ENCRYPTED_MONDAY_TOKEN"):
+            kms = boto3.client("kms")
             monday_token = kms.decrypt(
-                CiphertextBlob=base64.b64decode(os.getenv('ENCRYPTED_MONDAY_TOKEN'))
-            )['Plaintext']
+                CiphertextBlob=base64.b64decode(os.getenv("ENCRYPTED_MONDAY_TOKEN"))
+            )["Plaintext"]
         else:
-            monday_token = os.getenv('MONDAY_TOKEN')
+            monday_token = os.getenv("MONDAY_TOKEN")
         self.headers = {
-            'Content-Type': 'application/json',
-            'Authorization': monday_token
+            "Content-Type": "application/json",
+            "Authorization": monday_token,
         }
 
     def query(self, gql):
@@ -42,10 +42,10 @@ class MondayModel:
              {'id': '2222222', 'name': 'test board 2'}]
 
         """
-        r = requests.post(self.endpoint,
-                          data=json.dumps({"query": gql}),
-                          headers=self.headers)
-        return r.json()['data']
+        r = requests.post(
+            self.endpoint, data=json.dumps({"query": gql}), headers=self.headers
+        )
+        return r.json()["data"]
 
     def boards(self):
         """Get boards list.
@@ -60,8 +60,11 @@ class MondayModel:
              <monday_stats.board.Board at 0x111ff3990>,
 
         """
-        gql = '{boards {id name}}'
-        boards = [Board(board_id=b['id'], board_name=b['name']) for b in self.query(gql)['boards']]
+        gql = "{boards {id name}}"
+        boards = [
+            Board(board_id=b["id"], board_name=b["name"])
+            for b in self.query(gql)["boards"]
+        ]
         return boards
 
     def board_with_items(self, board_id):
@@ -92,6 +95,10 @@ class MondayModel:
             }
           }
         }
-        """ % (board_id)   # FIXME: this query is redundant to avoid complexity.
-        board = self.query(gql)['boards'][0]
-        return Board(board_id=board['id'], board_name=board['name'], items=board['items'])
+        """ % (
+            board_id
+        )  # FIXME: this query is redundant to avoid complexity.
+        board = self.query(gql)["boards"][0]
+        return Board(
+            board_id=board["id"], board_name=board["name"], items=board["items"]
+        )

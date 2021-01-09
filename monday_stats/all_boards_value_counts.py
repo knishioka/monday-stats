@@ -13,5 +13,5 @@ def main():
         print(df.apply(pd.value_counts).fillna(0).astype(int))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

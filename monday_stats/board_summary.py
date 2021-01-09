@@ -1,5 +1,6 @@
 import argparse
 import datetime
+
 import pandas as pd
 
 from monday_stats.monday_model import MondayModel
@@ -38,8 +39,12 @@ def board_summary(board, group_key, groups=[], value_texts=[], columns=[]):
     dfs = board.groups_dataframes()
     existing_groups = set(groups).intersection(dfs.keys())
     df = pd.concat([dfs[g] for g in existing_groups])
-    summary = pd.concat([summarize_group(gdf, group_id, value_texts=value_texts, columns=columns)
-                         for group_id, gdf in df.groupby('Position')])
+    summary = pd.concat(
+        [
+            summarize_group(gdf, group_id, value_texts=value_texts, columns=columns)
+            for group_id, gdf in df.groupby("Position")
+        ]
+    )
     output_index = pd.MultiIndex.from_product([df[group_key].unique(), value_texts])
     return summary.reindex(output_index).fillna(0).astype(int)
 
@@ -62,26 +67,27 @@ def summarize_group(gdf, group_id, value_texts=[], columns=[]):
     return summary
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Summarize board data.')
-    parser.add_argument('-b', '--board-id',
-                        required=True,
-                        help='monday board id')
-    parser.add_argument('-k', '--group-key',
-                        required=True,
-                        help='Key for grouping')
-    parser.add_argument('-g', '--groups',
-                        required=True,
-                        help='groups list separated by comma')
-    parser.add_argument('-v', '--values',
-                        required=True,
-                        help='value list separated by comma')
-    parser.add_argument('-c', '--columns',
-                        required=True,
-                        help='columns list separated by comma')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Summarize board data.")
+    parser.add_argument("-b", "--board-id", required=True, help="monday board id")
+    parser.add_argument("-k", "--group-key", required=True, help="Key for grouping")
+    parser.add_argument(
+        "-g", "--groups", required=True, help="groups list separated by comma"
+    )
+    parser.add_argument(
+        "-v", "--values", required=True, help="value list separated by comma"
+    )
+    parser.add_argument(
+        "-c", "--columns", required=True, help="columns list separated by comma"
+    )
     args = parser.parse_args()
-    groups = args.groups.split(',')
-    value_texts = args.values.split(',')
-    columns = args.columns.split(',')
-    main(board_id=args.board_id, group_key=args.group_key,
-         groups=groups, value_texts=value_texts, columns=columns)
+    groups = args.groups.split(",")
+    value_texts = args.values.split(",")
+    columns = args.columns.split(",")
+    main(
+        board_id=args.board_id,
+        group_key=args.group_key,
+        groups=groups,
+        value_texts=value_texts,
+        columns=columns,
+    )

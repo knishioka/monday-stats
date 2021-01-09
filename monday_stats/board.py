@@ -35,11 +35,12 @@ class Board:
         """
         groups = {}
         for item in items:
-            group_title = item['group']['title']
+            group_title = item["group"]["title"]
             if group_title not in groups:
-                groups[group_title] = Group(group_id=item['group']['id'],
-                                            group_title=group_title)
-            groups[group_title].add_item(Item(item['name'], item['column_values']))
+                groups[group_title] = Group(
+                    group_id=item["group"]["id"], group_title=group_title
+                )
+            groups[group_title].add_item(Item(item["name"], item["column_values"]))
         return groups
 
     def groups_dataframes(self):
@@ -51,7 +52,7 @@ class Board:
         """
         return {group_id: g.to_dataframe() for group_id, g in self.groups.items()}
 
-    def to_dataframe(self, index='item'):
+    def to_dataframe(self, index="item"):
         """Return dataframe including all groups.
 
         Args:
@@ -64,10 +65,15 @@ class Board:
             ValueError: If the index is not valid.
 
         """
-        df = pd.concat([gdf.assign(group=group_id) for group_id, gdf in self.groups_dataframes().items()])
-        if index == 'column':
+        df = pd.concat(
+            [
+                gdf.assign(group=group_id)
+                for group_id, gdf in self.groups_dataframes().items()
+            ]
+        )
+        if index == "column":
             return df.T
-        elif index == 'item':
+        elif index == "item":
             return df
         else:
             raise ValueError("index must be 'column' or 'item'")

@@ -25,7 +25,7 @@ class Group:
             items (Item): Item class.
 
         """
-        assert Item == type(item), 'item should be Item object.'
+        assert Item == type(item), "item should be Item object."
         self.items.append(item)
 
     def to_dataframe(self):

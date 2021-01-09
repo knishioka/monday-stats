@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-class Item():
+class Item:
     """Monday item class."""
 
     def __init__(self, name, column_values):
@@ -13,6 +13,6 @@ class Item():
 
         """
         self.name = name
-        titles = map(lambda x: x['title'], column_values)
-        values = map(lambda x: x['text'], column_values)
+        titles = map(lambda x: x["title"], column_values)
+        values = map(lambda x: x["text"], column_values)
         self.values = pd.Series(values, titles).rename(name)
