@@ -1,6 +1,10 @@
 name: Check python code
 
-on: [push]
+on:
+  push:
+    paths:
+    - '**.py'
+    - '.github/workflows/check_python_code.yml'
 
 jobs:
   check-code:
